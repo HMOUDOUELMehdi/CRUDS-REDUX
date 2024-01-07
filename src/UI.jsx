@@ -1,9 +1,12 @@
 import React from 'react';
+import Rogister from "./Login && Rogister/Register"
+import Login from "./Login && Rogister/Login"
 
 const UI = () => {
     return (
         <>
-            <h1>user interface</h1>
+            <Rogister />
+            <Login />
         </>
     );
 }
