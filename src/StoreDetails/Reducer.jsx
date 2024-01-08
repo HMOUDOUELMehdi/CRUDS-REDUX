@@ -1,23 +1,24 @@
-// Reducer.jsx
-const initialState = {
+const PasswordState = {
   isPasswordVisible: false,
-  userInfo: {},
 };
 
-export const passwordReducer = (state = initialState, action) => {
+export const passwordReducer = (state = PasswordState, action) => {
   switch (action.type) {
     case 'TOGGLE_PASSWORD_VISIBILITY':
-      return { ...state, isPasswordVisible: !state.isPasswordVisible };
+      return {isPasswordVisible: !state.isPasswordVisible };
     default:
       return state;
   }
 };
 
-export const saveInfoReducer = (state = initialState, action) => {
+const InfoState = {
+  userInfo: {},
+}
+
+export const saveInfoReducer = (state = InfoState, action) => {
   switch (action.type) {
     case 'SAVE_INFO':
       return {
-        ...state,
         userInfo: {
           ...state.userInfo,
           ...action.payload,

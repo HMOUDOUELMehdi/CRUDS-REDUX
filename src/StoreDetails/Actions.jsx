@@ -1,4 +1,3 @@
-// Actions.jsx
 export const TOGGLE_PASSWORD_VISIBILITY = 'TOGGLE_PASSWORD_VISIBILITY';
 export const SAVE_INFO = 'SAVE_INFO';
 
