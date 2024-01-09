@@ -28,3 +28,25 @@ export const saveInfoReducer = (state = InfoState, action) => {
       return state;
   }
 };
+
+
+const CheckState = {
+  user: {},
+}
+
+export const CheckInfoReducer = (state = CheckState, action) => {
+  switch (action.type) {
+    case 'CHECK_INFO':
+      return {
+        user: {
+          ...state.user,
+          ...action.payload,
+        },
+      };
+    default:
+      return state;
+  }
+};
+
+
+

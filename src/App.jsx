@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 import Register from "./Login && Rogister/Register";
 import Login from "./Login && Rogister/Login";
+import ListTasks from "./Tasks/ListTasks";
 
 
 function App() {
@@ -15,8 +16,12 @@ function App() {
       element: <Register /> ,
     },
     {
-      path: "/Login",
+      path: "/login",
       element: <Login /> ,
+    },    
+    {
+      path: "/task",
+      element: <ListTasks /> ,
     },    
   ]);
 
