@@ -6,6 +6,7 @@ import {
 import Register from "./Login && Rogister/Register";
 import Login from "./Login && Rogister/Login";
 import ListTasks from "./Tasks/ListTasks";
+import Task from "./Tasks/Task";
 
 
 function App() {
@@ -21,7 +22,13 @@ function App() {
     },    
     {
       path: "/task",
+      element: <Task /> ,
+      // element: <ListTasks /> ,
+    },   
+    {
+      path: "/task1",
       element: <ListTasks /> ,
+      // element: <ListTasks /> ,
     },    
   ]);
 
