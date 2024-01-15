@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { togglePasswordVisibility, saveInfo } from '../StoreDetails/Actions';
+import { togglePasswordVisibility, addUserData, fetchData } from '../StoreDetails/Actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchSaveInfo }) => {
+const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchAddUserData, dispatchFetchData, allUsers }) => {
   const passwordType = isPasswordVisible ? 'text' : 'password';
 
   const [userInfo, setUserInfo] = useState({
@@ -13,8 +13,6 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchSaveInf
     email: '',
     password: '',
   });
-
-  const [allUsers, setAllUsers] = useState([]);
 
   const showAlert = (type, message) => {
     setUserInfo((prevUserInfo) => ({ ...prevUserInfo, error: { type, message } }));
@@ -25,7 +23,7 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchSaveInf
     setUserInfo((prevUserInfo) => ({ ...prevUserInfo, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const { username, email, password } = userInfo;
@@ -35,35 +33,22 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchSaveInf
       return;
     }
 
-    try {
-      const response = await fetch('http://localhost:3000/users');
-      const data = await response.json();
-      setAllUsers(data);
-
-      if (allUsers.some((user) => user.email === email)) {
-        showAlert('danger', 'User with this email already exists');
-        return;
-      }
-
-      const registerResponse = await fetch('http://localhost:3000/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userInfo),
-      });
-
-      if (registerResponse.ok) {
-        dispatchSaveInfo(userInfo);
-        showAlert('success', 'Registration Success');
-      } else {
-        const errorData = await registerResponse.json();
-        showAlert('danger', `Registration failed: ${errorData.message}`);
-      }
-    } catch (error) {
-      showAlert('danger', 'Something went wrong');
+    // Check if the email already exists in the fetched data
+    if (allUsers.some((user) => user.email === email)) {
+      showAlert('danger', 'User with this email already exists');
+      return;
     }
+
+    // Dispatch the action to add user data
+    dispatchAddUserData(userInfo);
+
+    showAlert('success', 'Registration Success');
   };
+
+  useEffect(() => {
+    // Fetch data when the component mounts
+    dispatchFetchData();
+  }, [dispatchFetchData]);
 
   return (
     <div className="container my-5">
@@ -135,11 +120,13 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchSaveInf
 
 const mapStateToProps = (state) => ({
   isPasswordVisible: state.password.isPasswordVisible,
+  allUsers: state.fetchData.users, // Assuming the 'fetchData' reducer has a 'users' property
 });
 
 const mapDispatchToProps = (dispatch) => ({
   togglePasswordVisibility: () => dispatch(togglePasswordVisibility()),
-  dispatchSaveInfo: (userInfo) => dispatch(saveInfo(userInfo)),
+  dispatchAddUserData: (userInfo) => dispatch(addUserData(userInfo)),
+  dispatchFetchData: () => dispatch(fetchData()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);

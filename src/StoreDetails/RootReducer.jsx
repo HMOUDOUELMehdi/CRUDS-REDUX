@@ -1,11 +1,13 @@
 // RootReducer.jsx
 import { combineReducers } from 'redux';
-import { passwordReducer, saveInfoReducer,CheckInfoReducer } from './Reducer';
+import { passwordReducer, saveInfoReducer,checkInfoReducer ,fetchDataReducer} from './Reducer';
 
 const rootReducer = combineReducers({
   password: passwordReducer,
   saveInfo: saveInfoReducer,
-  checkUser:CheckInfoReducer,
+  CheckInfo: checkInfoReducer,
+  fetchData: fetchDataReducer,
+
   // Add other reducers if needed
 });
 

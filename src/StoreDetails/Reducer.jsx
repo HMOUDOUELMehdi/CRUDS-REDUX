@@ -1,5 +1,3 @@
-
-// reducers.js
 const PasswordState = {
   isPasswordVisible: false,
 };
@@ -7,7 +5,7 @@ const PasswordState = {
 export const passwordReducer = (state = PasswordState, action) => {
   switch (action.type) {
     case 'TOGGLE_PASSWORD_VISIBILITY':
-      return { isPasswordVisible: !state.isPasswordVisible };
+      return { ...state, isPasswordVisible: !state.isPasswordVisible };
     default:
       return state;
   }
@@ -15,25 +13,34 @@ export const passwordReducer = (state = PasswordState, action) => {
 
 const InfoState = {
   users: [],
-  loginSuccess: false, // added loginSuccess property
+  loginSuccess: false,
 };
 
 export const saveInfoReducer = (state = InfoState, action) => {
   switch (action.type) {
     case 'SAVE_INFO':
       return {
-        users: {
-          ...state.users,
-          ...action.payload,
-        },
-        loginSuccess: state.loginSuccess, // maintain loginSuccess in the state
+        ...state,
+        users: [...state.users, action.payload], // Assuming payload is a user object
       };
     default:
       return state;
   }
 };
 
-export const CheckInfoReducer = (state = InfoState, action) => {
+export const fetchDataReducer = (state = InfoState, action) => {
+  switch (action.type) {
+    case 'FETCH_DATA_SUCCESS':
+      return {
+        ...state,
+        users: action.payload, // Assuming payload is an array of users
+      };
+    default:
+      return state;
+  }
+};
+
+export const checkInfoReducer = (state = InfoState, action) => {
   switch (action.type) {
     case 'CHECK_INFO':
       const { email, password, users } = action.payload;
@@ -47,10 +54,7 @@ export const CheckInfoReducer = (state = InfoState, action) => {
       if (userExists) {
         // Handle the case when the user exists
         return {
-          users: {
-            ...state.users,
-            ...action.payload,
-          },
+          ...state,
           loginSuccess: true,
         };
       } else {
