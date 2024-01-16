@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { connect } from 'react-redux';
+import { connect, useSelector,useDispatch } from 'react-redux';
 import { togglePasswordVisibility, addUserData, fetchData } from '../StoreDetails/Actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchAddUserData, dispatchFetchData, allUsers }) => {
+const Register = ({ isPasswordVisible, togglePasswordVisibility }) => {
+  // const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchAddUserData, dispatchFetchData, allUsers }) => {
   const passwordType = isPasswordVisible ? 'text' : 'password';
 
   const [userInfo, setUserInfo] = useState({
@@ -13,6 +14,10 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchAddUser
     email: '',
     password: '',
   });
+
+  const dispatch = useDispatch()
+
+  const allUsers = useSelector((state) => state.allUsers)
 
   const showAlert = (type, message) => {
     setUserInfo((prevUserInfo) => ({ ...prevUserInfo, error: { type, message } }));
@@ -40,15 +45,16 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchAddUser
     }
 
     // Dispatch the action to add user data
-    dispatchAddUserData(userInfo);
+    dispatch(addUserData(userInfo));
 
     showAlert('success', 'Registration Success');
   };
 
   useEffect(() => {
     // Fetch data when the component mounts
-    dispatchFetchData();
-  }, [dispatchFetchData]);
+    dispatch(fetchData());
+    console.log(allUsers)
+  }, []);
 
   return (
     <div className="container my-5">
@@ -118,15 +124,16 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchAddUser
   );
 };
 
-const mapStateToProps = (state) => ({
-  isPasswordVisible: state.password.isPasswordVisible,
-  allUsers: state.fetchData.users, // Assuming the 'fetchData' reducer has a 'users' property
-});
+// const mapStateToProps = (state) => ({
+//   isPasswordVisible: state.password.isPasswordVisible,
+//   allUsers: state.fetchData.users, // Assuming the 'fetchData' reducer has a 'users' property
+// });
 
-const mapDispatchToProps = (dispatch) => ({
-  togglePasswordVisibility: () => dispatch(togglePasswordVisibility()),
-  dispatchAddUserData: (userInfo) => dispatch(addUserData(userInfo)),
-  dispatchFetchData: () => dispatch(fetchData()),
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   togglePasswordVisibility: () => dispatch(togglePasswordVisibility()),
+//   dispatchAddUserData: (userInfo) => dispatch(addUserData(userInfo)),
+//   dispatchFetchData: () => dispatch(fetchData()),
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+// export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default Register
