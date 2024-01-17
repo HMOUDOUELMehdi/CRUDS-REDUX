@@ -1,108 +1,138 @@
-// login.jsx
-import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { checkInfo, loginSuccessAction } from '../StoreDetails/Actions';
+// // login.jsx
+// import React, { useState, useEffect } from 'react';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import { useNavigate } from 'react-router-dom';
+// import { connect } from 'react-redux';
+// import { checkInfo, loginSuccessAction } from '../StoreDetails/Actions';
 
-const Login = ({ DcheckInfo, loginSuccess }) => {
-  const [user, setUser] = useState({
-    email: '',
-    password: '',
-  });
+// const Login = ({ DcheckInfo, loginSuccess }) => {
+//   const [user, setUser] = useState({
+//     email: '',
+//     password: '',
+//   });
 
-  const [data, setData] = useState([]);
-  const navigate = useNavigate();
+//   const [data, setData] = useState([]);
+//   const navigate = useNavigate();
 
-  const showAlert = (type, message) => {
-    setUser((prev) => ({ ...prev, error: { type, message } }));
-  };
+//   const showAlert = (type, message) => {
+//     setUser((prev) => ({ ...prev, error: { type, message } }));
+//   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser((prev) => ({ ...prev, [name]: value }));
-  };
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setUser((prev) => ({ ...prev, [name]: value }));
+//   };
 
-  const fetchData = async () => {
-    // Example of fetching data from a server
-    const response = await fetch('http://localhost:3000/users');
-    const data = await response.json();
-    setData(data);
-  };
+//   const fetchData = async () => {
+//     // Example of fetching data from a server
+//     const response = await fetch('http://localhost:3000/users');
+//     const data = await response.json();
+//     setData(data);
+//   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
 
-    fetchData();
+//     fetchData();
 
-    // Dispatch the action with user information
-    DcheckInfo(user);
+//     // Dispatch the action with user information
+//     DcheckInfo(user);
 
-    // Dispatch a separate action for login success
-    loginSuccess();
-  };
+//     // Dispatch a separate action for login success
+//     loginSuccess();
+//   };
 
-  useEffect(() => {
-    if (!loginSuccess) {
-      navigate('/task');
-    }
-  }, [loginSuccess]);
+//   useEffect(() => {
+//     if (!loginSuccess) {
+//       navigate('/task');
+//     }
+//   }, [loginSuccess]);
 
-  return (
-    <div className="container my-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-body">
-              <h2 className="card-title text-center mb-4">Login</h2>
-              {user.error && (
-                <div className={`alert alert-${user.error.type}`} role="alert">
-                  {user.error.message}
-                </div>
-              )}
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <input
-                    type="email"
-                    name="email"
-                    value={user.email}
-                    onChange={handleChange}
-                    className="form-control"
-                    placeholder="Enter your mail"
-                  />
-                </div>
-                <div className="mb-3">
-                  <input
-                    type="password"
-                    name="password"
-                    value={user.password}
-                    onChange={handleChange}
-                    className="form-control"
-                    placeholder="Enter your password"
-                  />
-                </div>
-                <button type="submit" className="btn btn-primary btn-block">
-                  Login
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="container my-5">
+//       <div className="row justify-content-center">
+//         <div className="col-md-6">
+//           <div className="card">
+//             <div className="card-body">
+//               <h2 className="card-title text-center mb-4">Login</h2>
+//               {user.error && (
+//                 <div className={`alert alert-${user.error.type}`} role="alert">
+//                   {user.error.message}
+//                 </div>
+//               )}
+//               <form onSubmit={handleSubmit}>
+//                 <div className="mb-3">
+//                   <input
+//                     type="email"
+//                     name="email"
+//                     value={user.email}
+//                     onChange={handleChange}
+//                     className="form-control"
+//                     placeholder="Enter your mail"
+//                   />
+//                 </div>
+//                 <div className="mb-3">
+//                   <input
+//                     type="password"
+//                     name="password"
+//                     value={user.password}
+//                     onChange={handleChange}
+//                     className="form-control"
+//                     placeholder="Enter your password"
+//                   />
+//                 </div>
+//                 <button type="submit" className="btn btn-primary btn-block">
+//                   Login
+//                 </button>
+//               </form>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
-const mapStateToProps = (state) => ({
-  // map any state you need from the Redux store
-  loginSuccess: state.loginSuccess,
-});
+// const mapStateToProps = (state) => ({
+//   // map any state you need from the Redux store
+//   loginSuccess: state.loginSuccess,
+// });
 
-const mapDispatchToProps = (dispatch) => ({
-  DcheckInfo: (user) => dispatch(checkInfo(user)),
-  loginSuccess: () => dispatch(loginSuccessAction()),
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   DcheckInfo: (user) => dispatch(checkInfo(user)),
+//   loginSuccess: () => dispatch(loginSuccessAction()),
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+// export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 
+// // export const checkInfoReducer = (state = InfoState, action) => {
+// //   switch (action.type) {
+// //     case 'CHECK_INFO':
+// //       const { email, password, users } = action.payload;
+
+// //       // Check if the user with the given email and password exists in the array
+// //       const userExists = users.some(
+// //         (userData) =>
+// //           userData.email === email && userData.password === password
+// //       );
+
+// //       if (userExists) {
+// //         // Handle the case when the user exists
+// //         return {
+// //           ...state,
+// //           loginSuccess: true,
+// //         };
+// //       } else {
+// //         // Handle the case when the user does not exist
+// //         // You might want to dispatch an action or handle it differently
+// //         return {
+// //           ...state,
+// //           loginSuccess: false,
+// //         };
+// //       }
+
+// //     default:
+// //       return state;
+// //   }
+// // };

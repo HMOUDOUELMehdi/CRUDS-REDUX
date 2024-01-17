@@ -1,71 +1,57 @@
+import axios from "axios";
+
 export const TOGGLE_PASSWORD_VISIBILITY = 'TOGGLE_PASSWORD_VISIBILITY';
-export const CHECK_INFO = 'CHECK_INFO';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const FETCH_DATA_SUCCESS = 'FETCH_DATA_SUCCESS';
-export const FETCH_DATA_FAILURE = 'FETCH_DATA_FAILURE'; // Add a constant for failure
-export const ADD_USER_DATA_SUCCESS = 'ADD_USER_DATA_SUCCESS';
-export const ADD_USER_DATA_FAILURE = 'ADD_USER_DATA_FAILURE';
+export const FETCH_SUCCESS = 'FETCH_SUCCESS';
+export const FETCH_FAILURE = 'FETCH_FAILURE';
+export const ADD_SUCCESS = 'ADD_SUCCESS';
+export const ADD_FAILURE = 'ADD_FAILURE';
 
 export const togglePasswordVisibility = () => ({
   type: TOGGLE_PASSWORD_VISIBILITY,
 });
 
-
-
-export const checkInfo = (user) => ({
-  type: CHECK_INFO,
-  payload: user,
+export const fetchSuccess = (data) => ({
+  type: FETCH_SUCCESS,
+  payload: data,
 });
 
-export const loginSuccessAction = () => ({
-  type: LOGIN_SUCCESS,
+export const fetchFailure = (error) => ({
+  type: FETCH_FAILURE,
+  payload: error,
 });
 
 export const fetchData = () => {
-  return async (dispatch) => {
-    try {
-      const response = await fetch('http://localhost:3000/users');
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      const data = await response.json();
-      dispatch({
-        type: FETCH_DATA_SUCCESS,
-        payload: data,
+  return function (dispatch) {
+    axios.get('http://localhost:3000/users')
+      .then((response) => {
+        const data = response.data;
+        dispatch(fetchSuccess(data));
+      })
+      .catch((error) => {
+        dispatch(fetchFailure(error.message));
       });
-    } catch (error) {
-      dispatch({
-        type: FETCH_DATA_FAILURE,
-        payload: error.message,
-      });
-    }
   };
 };
 
-export const addUserData = (userInfo) => {
-  return async (dispatch) => {
-    try {
-      const response = await fetch('http://localhost:3000/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userInfo),
-      });
+export const addSuccess = (data) => ({
+  type: ADD_SUCCESS,
+  payload: data,
+});
 
-      if (!response.ok) {
-        throw new Error('Failed to add user data');
-      }
+export const addFailure = (error) => ({
+  type: ADD_FAILURE,
+  payload: error,
+});
 
-      dispatch({
-        type: ADD_USER_DATA_SUCCESS,
-        payload: userInfo,
+export const addData = (user) => {
+  return function (dispatch) {
+    axios.post('http://localhost:3000/users', user)
+      .then((response) => {
+        const data = response.data;
+        dispatch(addSuccess(data));
+      })
+      .catch((error) => {
+        dispatch(addFailure(error.message));
       });
-    } catch (error) {
-      dispatch({
-        type: ADD_USER_DATA_FAILURE,
-        payload: error.message,
-      });
-    }
   };
 };

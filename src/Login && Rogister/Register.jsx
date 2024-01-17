@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { connect, useSelector,useDispatch } from 'react-redux';
-import { togglePasswordVisibility, addUserData, fetchData } from '../StoreDetails/Actions';
+import { useSelector, useDispatch } from 'react-redux';
+import { togglePasswordVisibility, addData, fetchData } from '../StoreDetails/Actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
-const Register = ({ isPasswordVisible, togglePasswordVisibility }) => {
-  // const Register = ({ isPasswordVisible, togglePasswordVisibility, dispatchAddUserData, dispatchFetchData, allUsers }) => {
+const Register = () => {
+  const isPasswordVisible = useSelector((state) => state.password.isPasswordVisible);
   const passwordType = isPasswordVisible ? 'text' : 'password';
+
+  // console.log(isPasswordVisible,passwordType)
 
   const [userInfo, setUserInfo] = useState({
     username: '',
@@ -15,9 +17,9 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility }) => {
     password: '',
   });
 
-  const dispatch = useDispatch()
-
-  const allUsers = useSelector((state) => state.allUsers)
+  const dispatch = useDispatch();
+  const allUsers = useSelector((state) => state.users);
+  const registrationSuccess = useSelector((state) => state.registrationSuccess);
 
   const showAlert = (type, message) => {
     setUserInfo((prevUserInfo) => ({ ...prevUserInfo, error: { type, message } }));
@@ -38,22 +40,36 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility }) => {
       return;
     }
 
-    // Check if the email already exists in the fetched data
-    if (allUsers.some((user) => user.email === email)) {
+    if (allUsers && allUsers.some((user) => user.email === email)) {
       showAlert('danger', 'User with this email already exists');
       return;
     }
 
-    // Dispatch the action to add user data
-    dispatch(addUserData(userInfo));
+    try {
+      // Dispatch the addData action
+      dispatch(addData(userInfo));
 
-    showAlert('success', 'Registration Success');
+      // Check if the registration was successful
+      if (registrationSuccess) {
+        showAlert('success', 'Registration Success');
+        setUserInfo({
+          username: '',
+          email: '',
+          password: '',
+        });
+      } else {
+        // Handle the case where registration was not successful
+        showAlert('danger', 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Error during registration:', error);
+      showAlert('danger', 'An error occurred during registration');
+    }
   };
 
   useEffect(() => {
-    // Fetch data when the component mounts
+    // Fetch initial data
     dispatch(fetchData());
-    console.log(allUsers)
   }, []);
 
   return (
@@ -100,13 +116,13 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility }) => {
                   />
                   {isPasswordVisible ? (
                     <FontAwesomeIcon
-                      onClick={togglePasswordVisibility}
+                      onClick={() => dispatch(togglePasswordVisibility())}
                       icon={faEyeSlash}
                       style={{ cursor: 'pointer' }}
                     />
                   ) : (
                     <FontAwesomeIcon
-                      onClick={togglePasswordVisibility}
+                      onClick={() => dispatch(togglePasswordVisibility())}
                       icon={faEye}
                       style={{ cursor: 'pointer' }}
                     />
@@ -124,16 +140,4 @@ const Register = ({ isPasswordVisible, togglePasswordVisibility }) => {
   );
 };
 
-// const mapStateToProps = (state) => ({
-//   isPasswordVisible: state.password.isPasswordVisible,
-//   allUsers: state.fetchData.users, // Assuming the 'fetchData' reducer has a 'users' property
-// });
-
-// const mapDispatchToProps = (dispatch) => ({
-//   togglePasswordVisibility: () => dispatch(togglePasswordVisibility()),
-//   dispatchAddUserData: (userInfo) => dispatch(addUserData(userInfo)),
-//   dispatchFetchData: () => dispatch(fetchData()),
-// });
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Register);
-export default Register
+export default Register;
