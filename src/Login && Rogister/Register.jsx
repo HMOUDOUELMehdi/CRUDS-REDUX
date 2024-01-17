@@ -9,8 +9,6 @@ const Register = () => {
   const isPasswordVisible = useSelector((state) => state.password.isPasswordVisible);
   const passwordType = isPasswordVisible ? 'text' : 'password';
 
-  // console.log(isPasswordVisible,passwordType)
-
   const [userInfo, setUserInfo] = useState({
     username: '',
     email: '',
@@ -18,11 +16,22 @@ const Register = () => {
   });
 
   const dispatch = useDispatch();
-  const allUsers = useSelector((state) => state.users);
-  const registrationSuccess = useSelector((state) => state.registrationSuccess);
+  const allUsers = useSelector((state) => state.fetchData.users);
+  const registrationSuccess = useSelector((state) => state.saveInfo.registrationSuccess);
+
+
+  const [alert, setAlert] = useState(null);
 
   const showAlert = (type, message) => {
-    setUserInfo((prevUserInfo) => ({ ...prevUserInfo, error: { type, message } }));
+    setAlert({ type, message });
+  };
+
+  const showSuccessAlert = () => {
+    showAlert('success', 'Registration Success');
+  };
+
+  const showFailureAlert = (errorMessage) => {
+    showAlert('danger', errorMessage);
   };
 
   const handleChange = (e) => {
@@ -30,47 +39,46 @@ const Register = () => {
     setUserInfo((prevUserInfo) => ({ ...prevUserInfo, [name]: value }));
   };
 
+  useEffect(() => {
+    dispatch(fetchData());
+    allUsers 
+    registrationSuccess
+  }, [userInfo.username]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const { username, email, password } = userInfo;
 
     if (username === '' || email === '' || password === '') {
-      showAlert('danger', 'All inputs are required');
+      showFailureAlert('All inputs are required')
       return;
     }
 
     if (allUsers && allUsers.some((user) => user.email === email)) {
-      showAlert('danger', 'User with this email already exists');
+      showFailureAlert('User with this email already exists')
       return;
     }
 
     try {
-      // Dispatch the addData action
       dispatch(addData(userInfo));
 
-      // Check if the registration was successful
       if (registrationSuccess) {
-        showAlert('success', 'Registration Success');
+        showSuccessAlert()
         setUserInfo({
           username: '',
           email: '',
           password: '',
         });
       } else {
-        // Handle the case where registration was not successful
-        showAlert('danger', 'Registration failed');
+        showFailureAlert('Registration failed')
       }
     } catch (error) {
-      console.error('Error during registration:', error);
-      showAlert('danger', 'An error occurred during registration');
+      showFailureAlert('An error occurred during registration')
     }
   };
 
-  useEffect(() => {
-    // Fetch initial data
-    dispatch(fetchData());
-  }, []);
+
 
   return (
     <div className="container my-5">
@@ -79,9 +87,9 @@ const Register = () => {
           <div className="card">
             <div className="card-body">
               <h2 className="card-title text-center mb-4">Register</h2>
-              {userInfo.error && (
-                <div className={`alert alert-${userInfo.error.type}`} role="alert">
-                  {userInfo.error.message}
+              {alert && (
+                <div className={`alert alert-${alert.type}`} role="alert">
+                  {alert.message}
                 </div>
               )}
               <form onSubmit={handleSubmit}>

@@ -1,11 +1,10 @@
-// import UI from "./UI"
 import {
   createBrowserRouter,
   RouterProvider,
   // useNavigate,
 } from "react-router-dom";
 import Register from "./Login && Rogister/Register";
-// import Login from "./Login && Rogister/Login";
+import Login from "./Login && Rogister/Login";
 import ListTasks from "./Tasks/ListTasks";
 import Task from "./Tasks/Task";
 // import { useEffect } from "react";
@@ -28,10 +27,10 @@ function App() {
       path: "/",
       element: <Register /> ,
     },
-    // {
-    //   path: "/login",
-    //   element: <Login /> ,
-    // },    
+    {
+      path: "/login",
+      element: <Login /> ,
+    },    
     {
       path: "/task",
       // element: <PrivateRoot element={ <Task /> } /> ,

@@ -1,138 +1,108 @@
-// // login.jsx
-// import React, { useState, useEffect } from 'react';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import { useNavigate } from 'react-router-dom';
-// import { connect } from 'react-redux';
-// import { checkInfo, loginSuccessAction } from '../StoreDetails/Actions';
+import React, { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, fetchData } from '../StoreDetails/Actions';
+import { useNavigate } from 'react-router-dom';
 
-// const Login = ({ DcheckInfo, loginSuccess }) => {
-//   const [user, setUser] = useState({
-//     email: '',
-//     password: '',
-//   });
+const Login = () => {
+  const dispatch = useDispatch();
+  const allUsers = useSelector((state) => state.fetchData.users);
+  const successLogin = useSelector((state) => state.login.loginSuccess);
+  const navigate = useNavigate();
 
-//   const [data, setData] = useState([]);
-//   const navigate = useNavigate();
+  const [user, setUser] = useState({
+    email: '',
+    password: '',
+  });
 
-//   const showAlert = (type, message) => {
-//     setUser((prev) => ({ ...prev, error: { type, message } }));
-//   };
+  const [alert, setAlert] = useState(null);
 
-//   const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setUser((prev) => ({ ...prev, [name]: value }));
-//   };
+  const showAlert = (type, message) => {
+    setAlert({ type, message });
+  };
 
-//   const fetchData = async () => {
-//     // Example of fetching data from a server
-//     const response = await fetch('http://localhost:3000/users');
-//     const data = await response.json();
-//     setData(data);
-//   };
+  const showSuccessAlert = () => {
+    showAlert('success', 'Login Success');
+  };
 
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
+  const showFailureAlert = (errorMessage) => {
+    showAlert('danger', errorMessage);
+  };
 
-//     fetchData();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser((prev) => ({ ...prev, [name]: value }));
+  };
 
-//     // Dispatch the action with user information
-//     DcheckInfo(user);
+  useEffect(() => {
+    dispatch(fetchData());
+  }, [dispatch]);
 
-//     // Dispatch a separate action for login success
-//     loginSuccess();
-//   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-//   useEffect(() => {
-//     if (!loginSuccess) {
-//       navigate('/task');
-//     }
-//   }, [loginSuccess]);
+    const { email, password } = user;
 
-//   return (
-//     <div className="container my-5">
-//       <div className="row justify-content-center">
-//         <div className="col-md-6">
-//           <div className="card">
-//             <div className="card-body">
-//               <h2 className="card-title text-center mb-4">Login</h2>
-//               {user.error && (
-//                 <div className={`alert alert-${user.error.type}`} role="alert">
-//                   {user.error.message}
-//                 </div>
-//               )}
-//               <form onSubmit={handleSubmit}>
-//                 <div className="mb-3">
-//                   <input
-//                     type="email"
-//                     name="email"
-//                     value={user.email}
-//                     onChange={handleChange}
-//                     className="form-control"
-//                     placeholder="Enter your mail"
-//                   />
-//                 </div>
-//                 <div className="mb-3">
-//                   <input
-//                     type="password"
-//                     name="password"
-//                     value={user.password}
-//                     onChange={handleChange}
-//                     className="form-control"
-//                     placeholder="Enter your password"
-//                   />
-//                 </div>
-//                 <button type="submit" className="btn btn-primary btn-block">
-//                   Login
-//                 </button>
-//               </form>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
+    if (email === '' || password === '') {
+      showFailureAlert('All inputs are required');
+      return;
+    }
 
-// const mapStateToProps = (state) => ({
-//   // map any state you need from the Redux store
-//   loginSuccess: state.loginSuccess,
-// });
+    const userExists = allUsers.some((userData) => userData.email === email && userData.password === password);
 
-// const mapDispatchToProps = (dispatch) => ({
-//   DcheckInfo: (user) => dispatch(checkInfo(user)),
-//   loginSuccess: () => dispatch(loginSuccessAction()),
-// });
+    if (userExists) {
+      dispatch(login(true));
+      showSuccessAlert();
+      navigate('/task');
+    } else {
+      dispatch(login(false));
+      showFailureAlert('Invalid email or password');
+    }
+  };
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Login);
+  return (
+    <div className="container my-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-body">
+              <h2 className="card-title text-center mb-4">Login</h2>
+              {alert && (
+                <div className={`alert alert-${alert.type}`} role="alert">
+                  {alert.message}
+                </div>
+              )}
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <input
+                    type="email"
+                    name="email"
+                    value={user.email}
+                    onChange={handleChange}
+                    className="form-control"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="password"
+                    name="password"
+                    value={user.password}
+                    onChange={handleChange}
+                    className="form-control"
+                    placeholder="Enter your password"
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary btn-block">
+                  Login
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-
-// // export const checkInfoReducer = (state = InfoState, action) => {
-// //   switch (action.type) {
-// //     case 'CHECK_INFO':
-// //       const { email, password, users } = action.payload;
-
-// //       // Check if the user with the given email and password exists in the array
-// //       const userExists = users.some(
-// //         (userData) =>
-// //           userData.email === email && userData.password === password
-// //       );
-
-// //       if (userExists) {
-// //         // Handle the case when the user exists
-// //         return {
-// //           ...state,
-// //           loginSuccess: true,
-// //         };
-// //       } else {
-// //         // Handle the case when the user does not exist
-// //         // You might want to dispatch an action or handle it differently
-// //         return {
-// //           ...state,
-// //           loginSuccess: false,
-// //         };
-// //       }
-
-// //     default:
-// //       return state;
-// //   }
-// // };
+export default Login;

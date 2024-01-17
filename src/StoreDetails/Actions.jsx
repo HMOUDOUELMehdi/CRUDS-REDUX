@@ -5,6 +5,7 @@ export const FETCH_SUCCESS = 'FETCH_SUCCESS';
 export const FETCH_FAILURE = 'FETCH_FAILURE';
 export const ADD_SUCCESS = 'ADD_SUCCESS';
 export const ADD_FAILURE = 'ADD_FAILURE';
+export const LOGIN = 'LOGIN';
 
 export const togglePasswordVisibility = () => ({
   type: TOGGLE_PASSWORD_VISIBILITY,
@@ -55,3 +56,10 @@ export const addData = (user) => {
       });
   };
 };
+
+
+export const login = (loginSuccess) => ({
+  type: LOGIN,
+  payload: loginSuccess,
+})
+

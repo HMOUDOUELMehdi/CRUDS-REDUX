@@ -1,13 +1,12 @@
-// RootReducer.jsx
 import { combineReducers } from 'redux';
-import { passwordReducer, addDataReducer ,fetchDataReducer} from './Reducer';
+import { passwordReducer, addDataReducer ,fetchDataReducer, loginReducer} from './Reducer';
 
 const rootReducer = combineReducers({
   password: passwordReducer,
   saveInfo: addDataReducer,
   fetchData: fetchDataReducer,
+  login: loginReducer,
 
-  // Add other reducers if needed
 });
 
 export default rootReducer;

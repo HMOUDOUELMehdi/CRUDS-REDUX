@@ -1,6 +1,8 @@
 const InfoState = {
   users: [],
   isPasswordVisible: false,
+  registrationSuccess:true,
+  loginSuccess: null
 };
 
 export const passwordReducer = (state = InfoState, action) => {
@@ -30,15 +32,27 @@ export const addDataReducer = (state = InfoState, action) => {
       return {
         ...state,
         users: [...state.users, action.payload],
-        registrationSuccess: true, // Set to true on success
+        registrationSuccess: true, 
       };
     case 'ADD_FAILURE':
       return {
         ...state,
-        registrationSuccess: false, // Set to false on failure
+        registrationSuccess: false, 
       };
     default:
       return state;
   }
 };
 
+export const loginReducer = (state = InfoState, action) => {
+  switch (action.type) {
+    case 'LOGIN':
+      console.log(action.payload)
+      return {
+        ...state,
+        loginSuccess: action.payload,
+      };
+    default:
+      return state;
+  }
+};
