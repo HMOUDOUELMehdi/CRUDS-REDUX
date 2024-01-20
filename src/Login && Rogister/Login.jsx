@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, fetchData } from '../StoreDetails/Actions';
+import { login, fetchData , togglePasswordVisibility} from '../StoreDetails/Actions';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const allUsers = useSelector((state) => state.fetchData.users);
   const successLogin = useSelector((state) => state.login.loginSuccess);
-  const navigate = useNavigate();
+  const isPasswordVisible = useSelector((state) => state.password.isPasswordVisible);
+  const passwordType = isPasswordVisible ? 'text' : 'password';
 
   const [user, setUser] = useState({
     email: '',
@@ -19,10 +24,6 @@ const Login = () => {
 
   const showAlert = (type, message) => {
     setAlert({ type, message });
-  };
-
-  const showSuccessAlert = () => {
-    showAlert('success', 'Login Success');
   };
 
   const showFailureAlert = (errorMessage) => {
@@ -52,7 +53,6 @@ const Login = () => {
 
     if (userExists) {
       dispatch(login(true));
-      showSuccessAlert();
       navigate('/task');
     } else {
       dispatch(login(false));
@@ -85,18 +85,34 @@ const Login = () => {
                 </div>
                 <div className="mb-3">
                   <input
-                    type="password"
+                    type={passwordType}
                     name="password"
                     value={user.password}
                     onChange={handleChange}
                     className="form-control"
                     placeholder="Enter your password"
                   />
+
+                  {isPasswordVisible ? (
+                    <FontAwesomeIcon
+                      onClick={() => dispatch(togglePasswordVisibility())}
+                      icon={faEyeSlash}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      onClick={() => dispatch(togglePasswordVisibility())}
+                      icon={faEye}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  )}
+
                 </div>
                 <button type="submit" className="btn btn-primary btn-block">
                   Login
                 </button>
-              </form>
+              </form> <br />
+              <div> Create New Account ! <Link to={'/'} > Register </Link> </div>
             </div>
           </div>
         </div>

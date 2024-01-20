@@ -47,7 +47,6 @@ export const addDataReducer = (state = InfoState, action) => {
 export const loginReducer = (state = InfoState, action) => {
   switch (action.type) {
     case 'LOGIN':
-      console.log(action.payload)
       return {
         ...state,
         loginSuccess: action.payload,

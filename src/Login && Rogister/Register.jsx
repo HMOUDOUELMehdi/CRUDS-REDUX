@@ -4,8 +4,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { togglePasswordVisibility, addData, fetchData } from '../StoreDetails/Actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { Link } from "react-router-dom";
+
 
 const Register = () => {
+
+  const dispatch = useDispatch();
+
+
   const isPasswordVisible = useSelector((state) => state.password.isPasswordVisible);
   const passwordType = isPasswordVisible ? 'text' : 'password';
 
@@ -15,7 +21,6 @@ const Register = () => {
     password: '',
   });
 
-  const dispatch = useDispatch();
   const allUsers = useSelector((state) => state.fetchData.users);
   const registrationSuccess = useSelector((state) => state.saveInfo.registrationSuccess);
 
@@ -27,7 +32,7 @@ const Register = () => {
   };
 
   const showSuccessAlert = () => {
-    showAlert('success', 'Registration Success');
+    showAlert('success', 'Registration Successful! Now, go to the Login Page (link button)');
   };
 
   const showFailureAlert = (errorMessage) => {
@@ -139,7 +144,8 @@ const Register = () => {
                 <button type="submit" className="btn btn-success btn-block">
                   Register
                 </button>
-              </form>
+              </form><br />
+              <div> You Already Have Account ? <Link to={"/login"} >Login</Link>  </div>
             </div>
           </div>
         </div>
