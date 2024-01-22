@@ -1,109 +1,120 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ListTask from './ListTasks';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTask } from '../StoreDetails/Actions';
 
 const Task = () => {
+  const currentUser = useSelector((state) => state.currentUser.currentUser);
+  const dispatch = useDispatch();
 
-  const [taskInfo , setTaskInfo] = useState({
-    task:'',
-    date:''
-  })
+  const currentUserInfo = JSON.parse(currentUser);
 
-  const [tasks , setTasks] = useState([])
+  const [alert, setAlert] = useState(null);
+
+  const [taskInfo, setTaskInfo] = useState({
+    taskText: '',
+    dateDoIt: '',
+    dateAdd: new Date().toLocaleString(),
+    userId: currentUserInfo.id,
+    userName: currentUserInfo.username,
+  });
+
+  const showAlert = (type, message) => {
+    setAlert({ type, message });
+  };
+
+  const showFailureAlert = (errorMessage) => {
+    showAlert('danger', errorMessage);
+  };
+
+  const showSuccessAlert = () => {
+    showAlert('success', 'Task is marked as done. Be careful To DO it.');
+  };
 
   const handleChange = (event) => {
-    const { value,name } = event.target
+    const { value, name } = event.target;
     setTaskInfo((prevTaskInfo) => ({ ...prevTaskInfo, [name]: value }));
   };
 
-  const handleAddTask = () => {
+  const handleAddTask = (e) => {
+    e.preventDefault();
+    const { taskText, dateDoIt, dateAdd, userId, userName } = taskInfo;
+    if (taskText === '' || dateDoIt === '') {
+      showFailureAlert('All inputs are required');
+      return;
+    }
+    dispatch(addTask(taskInfo));
+    showSuccessAlert();
+    setTaskInfo({ ...taskInfo, taskText: '', dateDoIt: '' });
+  };
 
+  const spanStyle = {
+    fontWeight: 'bold',
+    fontSize: '1.2em',
+    color: 'blue',
   };
 
   return (
-<div className="container mt-4">
-  <div className="row">
-    {/* Add Task Form (Left Column) */}
-    <div className="col-md-6 mb-4">
-      <div className="card">
-        <div className="card-body">
-          <h5 className="card-title">Add Task</h5>
-          <form>
-            <div className="mb-3">
-              <label htmlFor="taskInput" className="form-label">
-                Task
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                value={taskInfo.task}
-                onChange={handleChange}
-                name="task"
-              />
+    <div className="container mt-4">
+      <button type="button" className="btn btn-danger m-2">
+        Logout
+      </button>
+      <div className="row">
+        <div className="col-md-6 mb-4">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">
+                Welcome,
+                <span style={spanStyle}>{taskInfo.userName}</span>! Wanna Add Task?
+              </h5>
+              {alert && (
+                <div className={`alert alert-${alert.type}`} role="alert">
+                  {alert.message}
+                </div>
+              )}
+              <form>
+                <div className="mb-3">
+                  <label htmlFor="taskInput" className="form-label">
+                    Task
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={taskInfo.taskText}
+                    onChange={handleChange}
+                    name="taskText"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="dateInput" className="form-label">
+                    Date To Do it
+                  </label>
+                  <input
+                    type="datetime-local"
+                    className="form-control"
+                    value={taskInfo.dateDoIt}
+                    onChange={handleChange}
+                    name="dateDoIt"
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleAddTask}
+                >
+                  Add Task
+                </button>
+              </form>
             </div>
-            <div className="mb-3">
-              <label htmlFor="dateInput" className="form-label">
-                Date To Do it
-              </label>
-              <input
-                type="date"
-                className="form-control"
-                value={taskInfo.date}
-                onChange={handleChange}
-                name="date"
-              />
-            </div>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleAddTask}
-            >
-              Add Task
-            </button>
-          </form>
+          </div>
+        </div>
+
+        <div className="col-md-6">
+          <ListTask />
         </div>
       </div>
     </div>
-
-    {/* Task List (Right Column) */}
-    <div className="col-md-6">
-      <div className="container">
-        <h5 className="mb-3">List of Tasks</h5>
-        <div className="table-responsive">
-          <table className="table table-striped table-bordered">
-            <thead className="thead-dark">
-              <tr>
-                <th scope="col">Task</th>
-                <th scope="col">Date Added</th>
-                <th scope="col">Date To Do it</th>
-                <th scope="col" className="text-center">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task) => (
-                <tr key={task.id}>
-                  <td>{task.task}</td>
-                  <td>{/* Date Added goes here */}</td>
-                  <td>{task.date}</td>
-                  <td className="text-center">
-                    <button type="button" className="btn btn-warning me-2">
-                      Edit
-                    </button>
-                    <button type="button" className="btn btn-danger">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
   );
 };
 

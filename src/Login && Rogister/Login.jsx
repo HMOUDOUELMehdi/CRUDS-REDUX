@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, fetchData , togglePasswordVisibility} from '../StoreDetails/Actions';
+import { login, fetchData , togglePasswordVisibility,getCurrentUser} from '../StoreDetails/Actions';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +11,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const allUsers = useSelector((state) => state.fetchData.users);
-  const successLogin = useSelector((state) => state.login.loginSuccess);
+  // const successLogin = useSelector((state) => state.login.loginSuccess);
   const isPasswordVisible = useSelector((state) => state.password.isPasswordVisible);
   const passwordType = isPasswordVisible ? 'text' : 'password';
 
@@ -54,9 +54,7 @@ const Login = () => {
     if (userExists) {
       dispatch(login(true));
       navigate('/task');
-    } else {
-      dispatch(login(false));
-      showFailureAlert('Invalid email or password');
+      dispatch(getCurrentUser(email))
     }
   };
 

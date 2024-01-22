@@ -1,8 +1,10 @@
 const InfoState = {
   users: [],
   isPasswordVisible: false,
-  registrationSuccess:true,
-  loginSuccess: null
+  registrationSuccess: true,
+  loginSuccess: localStorage.getItem('loginSuccess') === 'true' || null,
+  tasks: [],
+  currentUser: localStorage.getItem('currentUser') || null,
 };
 
 export const passwordReducer = (state = InfoState, action) => {
@@ -32,12 +34,12 @@ export const addDataReducer = (state = InfoState, action) => {
       return {
         ...state,
         users: [...state.users, action.payload],
-        registrationSuccess: true, 
+        registrationSuccess: true,
       };
     case 'ADD_FAILURE':
       return {
         ...state,
-        registrationSuccess: false, 
+        registrationSuccess: false,
       };
     default:
       return state;
@@ -47,6 +49,7 @@ export const addDataReducer = (state = InfoState, action) => {
 export const loginReducer = (state = InfoState, action) => {
   switch (action.type) {
     case 'LOGIN':
+      localStorage.setItem('loginSuccess', action.payload);
       return {
         ...state,
         loginSuccess: action.payload,
@@ -55,3 +58,30 @@ export const loginReducer = (state = InfoState, action) => {
       return state;
   }
 };
+
+export const addTaskReducer = (state = InfoState, action) => {
+  switch (action.type) {
+    case 'ADD_TASK_SUCCESS':
+      return {
+        ...state,
+        tasks: [...state.tasks, action.payload],
+      };
+    default:
+      return state;
+  }
+};
+
+export const getCurrentUserReducer = (state = InfoState, action) => {
+  switch (action.type) {
+    case 'GET_CURRENT_USER_SUCCESS':
+      const currentUserString = JSON.stringify(action.payload);
+      localStorage.setItem('currentUser', currentUserString);
+      return {
+        ...state,
+        currentUser: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
