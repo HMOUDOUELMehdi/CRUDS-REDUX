@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ListTask from './ListTasks';
 import { useDispatch, useSelector } from 'react-redux';
-import { addTask } from '../StoreDetails/Actions';
+import { addTask, logOut } from '../StoreDetails/Actions';
+import { useNavigate } from 'react-router-dom';
 
 const Task = () => {
   const currentUser = useSelector((state) => state.currentUser.currentUser);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const currentUserInfo = JSON.parse(currentUser);
 
@@ -49,15 +51,16 @@ const Task = () => {
     setTaskInfo({ ...taskInfo, taskText: '', dateDoIt: '' });
   };
 
-  const spanStyle = {
-    fontWeight: 'bold',
-    fontSize: '1.2em',
-    color: 'blue',
-  };
-
   return (
     <div className="container mt-4">
-      <button type="button" className="btn btn-danger m-2">
+      <button
+        type="button"
+        className="btn btn-danger m-2"
+        onClick={() => {
+          dispatch(logOut(false));
+          navigate("/login");
+        }}
+      >
         Logout
       </button>
       <div className="row">
@@ -66,7 +69,9 @@ const Task = () => {
             <div className="card-body">
               <h5 className="card-title">
                 Welcome,
-                <span style={spanStyle}>{taskInfo.userName}</span>! Wanna Add Task?
+                <span style={{ fontWeight: 'bold', fontSize: '1.2em', color: 'blue' }}>
+                  {taskInfo.userName}
+                </span>! Wanna Add Task?
               </h5>
               {alert && (
                 <div className={`alert alert-${alert.type}`} role="alert">

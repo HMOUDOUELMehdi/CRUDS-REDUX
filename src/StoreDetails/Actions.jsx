@@ -8,8 +8,11 @@ export const ADD_FAILURE = 'ADD_FAILURE';
 export const ADD_TASK_SUCCESS = 'ADD_TASK_SUCCESS';
 export const ADD_TASK_FAILURE = 'ADD_TASK_FAILURE';
 export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 export const GET_CURRENT_USER_SUCCESS = 'GET_CURRENT_USER_SUCCESS';
 export const GET_CURRENT_USER_FAILURE = 'GET_CURRENT_USER_FAILURE';
+export const GET_TASKS_SUCCESS = 'GET_TASKS_SUCCESS';
+export const GET_TASKS_FAILURE = 'GET_TASKS_FAILURE';
 
 export const togglePasswordVisibility = () => ({
   type: TOGGLE_PASSWORD_VISIBILITY,
@@ -118,3 +121,34 @@ export const getCurrentUser = (email) => {
       });
   };
 };
+
+export const getTasksSuccess = (data) => ({
+  type: GET_TASKS_SUCCESS,
+  payload: data,
+});
+
+export const getTasksFailure = (error) => ({
+  type: GET_TASKS_FAILURE,
+  payload: error,
+});
+
+export const getTasks = (currentUserId) => {
+  return function (dispatch) {
+    axios.get('http://localhost:3000/tasks')
+      .then((response) => {
+        const data = response.data;
+        const tasksCurrentUser = data.filter((task) => task.userId === currentUserId); 
+        if (tasksCurrentUser) {
+          dispatch(getTasksSuccess(tasksCurrentUser));
+        }
+      })
+      .catch((error) => {
+        dispatch(getTasksFailure(error.message));
+      });
+  };
+};
+
+export const logOut = (logData) => ({
+  type: LOGOUT,
+  payload: logData,
+});

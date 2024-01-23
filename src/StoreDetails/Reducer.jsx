@@ -5,6 +5,7 @@ const InfoState = {
   loginSuccess: localStorage.getItem('loginSuccess') === 'true' || null,
   tasks: [],
   currentUser: localStorage.getItem('currentUser') || null,
+  tasksCurrentUser:[]
 };
 
 export const passwordReducer = (state = InfoState, action) => {
@@ -85,3 +86,26 @@ export const getCurrentUserReducer = (state = InfoState, action) => {
   }
 };
 
+export const getTasksReducer = (state = InfoState, action) => {
+  switch (action.type) {
+    case 'GET_TASKS_SUCCESS':
+      return {
+        ...state,
+        tasksCurrentUser: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const logOutReducer = (state = InfoState, action) => {
+  switch (action.type) {
+    case 'LOGOUt':
+      return {
+        ...state,
+        loginSuccess: action.payload,
+      };
+    default:
+      return state;
+  }
+};
