@@ -13,6 +13,8 @@ export const GET_CURRENT_USER_SUCCESS = 'GET_CURRENT_USER_SUCCESS';
 export const GET_CURRENT_USER_FAILURE = 'GET_CURRENT_USER_FAILURE';
 export const GET_TASKS_SUCCESS = 'GET_TASKS_SUCCESS';
 export const GET_TASKS_FAILURE = 'GET_TASKS_FAILURE';
+export const DELETE_TASK_SUCCESS = 'DELETE_TASK_SUCCESS';
+export const DELETE_TASK_FAILURE = 'DELETE_TASK_FAILURE';
 
 export const togglePasswordVisibility = () => ({
   type: TOGGLE_PASSWORD_VISIBILITY,
@@ -152,3 +154,26 @@ export const logOut = (logData) => ({
   type: LOGOUT,
   payload: logData,
 });
+
+
+export const deleteTaskSuccess = (taskId) => ({
+  type: 'DELETE_TASK_SUCCESS',
+  payload: taskId,
+});
+
+export const deleteTaskFailure = (error) => ({
+  type: 'DELETE_TASK_FAILURE',
+  payload: error,
+});
+
+export const deleteTask = (taskId) => {
+  return async (dispatch) => {
+    try {
+      await axios.delete(`http://localhost:3000/tasks/${taskId}`);
+      dispatch(deleteTaskSuccess(taskId));
+    } catch (error) {
+      dispatch(deleteTaskFailure('Failed to delete task'));
+      throw error; // rethrow the error to catch it in the component
+    }
+  };
+};

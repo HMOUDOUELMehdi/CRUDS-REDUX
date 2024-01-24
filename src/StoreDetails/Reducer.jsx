@@ -109,3 +109,18 @@ export const logOutReducer = (state = InfoState, action) => {
       return state;
   }
 };
+
+export const deleteTaskReducer = (state = InfoState, action) => {
+  switch (action.type) {
+    case 'DELETE_TASK_SUCCESS':
+      const updatedTasks = state.tasksCurrentUser.filter((task) => task.id !== action.payload);
+      return {
+        ...state,
+        tasksCurrentUser: updatedTasks,
+      };
+    case 'DELETE_TASK_FAILURE':
+      return state;
+    default:
+      return state;
+  }
+};

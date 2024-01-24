@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
-import { passwordReducer, addDataReducer ,fetchDataReducer, loginReducer ,addTaskReducer,getCurrentUserReducer,getTasksReducer,logOutReducer} from './Reducer';
+import { passwordReducer, addDataReducer ,fetchDataReducer, loginReducer 
+  ,addTaskReducer,getCurrentUserReducer,getTasksReducer,logOutReducer,deleteTaskReducer} from './Reducer';
 
 const rootReducer = combineReducers({
   password: passwordReducer,
@@ -9,7 +10,8 @@ const rootReducer = combineReducers({
   addTask: addTaskReducer,
   currentUser: getCurrentUserReducer,
   getTasks: getTasksReducer,
-  logOut:logOutReducer
+  logOut:logOutReducer,
+  deleteTasks:deleteTaskReducer
 });
 
 export default rootReducer;
