@@ -5,7 +5,10 @@ const InfoState = {
   loginSuccess: localStorage.getItem('loginSuccess') === 'true' || null,
   tasks: [],
   currentUser: localStorage.getItem('currentUser') || null,
-  tasksCurrentUser:[]
+  tasksCurrentUser:[],
+  taskId:'',
+  taskText:'',
+  taskDate:''
 };
 
 export const passwordReducer = (state = InfoState, action) => {
@@ -124,3 +127,34 @@ export const deleteTaskReducer = (state = InfoState, action) => {
       return state;
   }
 };
+
+export const GetInfoForEditReducer = (state = InfoState, action) => {
+  switch (action.type) {
+    case 'GET_INFO_FOR_EDIT':
+      return {
+        ...state,
+        taskId: action.payload.taskId,
+        taskText: action.payload.taskText,
+        taskDate: action.payload.taskDate,
+      };
+    default:
+      return state;
+  }
+};
+
+/*export const updateTaskReducer = (state = InfoState, action) => {
+  switch (action.type) {
+    case 'UPDATE_TASK_SUCCESS':
+      const updatedTasks = state.tasksCurrentUser.map((task) => {
+        return task.id === action.payload.id ? { ...task, ...action.payload } : task;
+      });
+      return {
+        ...state,
+        tasksCurrentUser: updatedTasks,
+      };
+    case 'UPDATE_TASK_FAILURE':
+      return state;
+    default:
+      return state;
+  }
+}; */

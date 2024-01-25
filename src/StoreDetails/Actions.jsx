@@ -15,6 +15,9 @@ export const GET_TASKS_SUCCESS = 'GET_TASKS_SUCCESS';
 export const GET_TASKS_FAILURE = 'GET_TASKS_FAILURE';
 export const DELETE_TASK_SUCCESS = 'DELETE_TASK_SUCCESS';
 export const DELETE_TASK_FAILURE = 'DELETE_TASK_FAILURE';
+export const GET_INFO_FOR_EDIT = 'GET_INFO_FOR_EDIT';
+export const UPDATE_TASK_FAILURE = 'UPDATE_TASK_FAILURE';
+export const UPDATE_TASK_SUCCESS = 'UPDATE_TASK_SUCCESS';
 
 export const togglePasswordVisibility = () => ({
   type: TOGGLE_PASSWORD_VISIBILITY,
@@ -155,7 +158,6 @@ export const logOut = (logData) => ({
   payload: logData,
 });
 
-
 export const deleteTaskSuccess = (taskId) => ({
   type: 'DELETE_TASK_SUCCESS',
   payload: taskId,
@@ -174,6 +176,32 @@ export const deleteTask = (taskId) => {
     } catch (error) {
       dispatch(deleteTaskFailure('Failed to delete task'));
       throw error; // rethrow the error to catch it in the component
+    }
+  };
+};
+
+export const updateTaskSuccess = (task) => ({
+  type: 'UPDATE_TASK_SUCCESS',
+  payload: task,
+});
+
+export const updateTaskFailure = (error) => ({
+  type: 'UPDATE_TASK_FAILURE',
+  payload: error,
+});
+
+export const updateTask = (task) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.put(`http://localhost:3000/tasks/${task.taskId}`, {
+        taskText: task.taskText,
+        dateDoIt: task.taskDate,
+      });
+      const updatedTask = response.data;
+      dispatch(updateTaskSuccess(updatedTask));
+    } catch (error) {
+      dispatch(updateTaskFailure(error.message));
+      throw error;
     }
   };
 };

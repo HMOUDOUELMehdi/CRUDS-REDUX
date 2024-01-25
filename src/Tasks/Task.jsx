@@ -7,6 +7,11 @@ import { useNavigate } from 'react-router-dom';
 
 const Task = () => {
   const currentUser = useSelector((state) => state.currentUser.currentUser);
+
+  const taskId = useSelector((state) => state.getInfo.taskId);
+  const taskText = useSelector((state) => state.getInfo.taskText);
+  const taskDate = useSelector((state) => state.getInfo.taskDate);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -86,7 +91,7 @@ const Task = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={taskInfo.taskText}
+                    value={taskText ? taskText :taskInfo.taskText}
                     onChange={handleChange}
                     name="taskText"
                   />
@@ -98,7 +103,7 @@ const Task = () => {
                   <input
                     type="datetime-local"
                     className="form-control"
-                    value={taskInfo.dateDoIt}
+                    value={taskDate ? taskDate  :taskInfo.dateDoIt}
                     onChange={handleChange}
                     name="dateDoIt"
                   />
