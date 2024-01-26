@@ -8,14 +8,11 @@ import { useNavigate } from 'react-router-dom';
 const Task = () => {
   const currentUser = useSelector((state) => state.currentUser.currentUser);
 
-  const taskId = useSelector((state) => state.getInfo.taskId);
-  const taskText = useSelector((state) => state.getInfo.taskText);
-  const taskDate = useSelector((state) => state.getInfo.taskDate);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const currentUserInfo = JSON.parse(currentUser);
+  const currentUserInfo = currentUser && typeof currentUser === 'string' ? JSON.parse(currentUser) : currentUser;
 
   const [alert, setAlert] = useState(null);
 
@@ -49,11 +46,21 @@ const Task = () => {
     const { taskText, dateDoIt, dateAdd, userId, userName } = taskInfo;
     if (taskText === '' || dateDoIt === '') {
       showFailureAlert('All inputs are required');
+      
+      setTimeout(() => {
+        setAlert(null);
+      }, 7000);
+
       return;
     }
     dispatch(addTask(taskInfo));
     showSuccessAlert();
     setTaskInfo({ ...taskInfo, taskText: '', dateDoIt: '' });
+    
+    setTimeout(() => {
+      setAlert(null);
+    }, 7000);
+
   };
 
   return (
@@ -91,7 +98,7 @@ const Task = () => {
                   <input
                     type="text"
                     className="form-control"
-                    value={taskText ? taskText :taskInfo.taskText}
+                    value={taskInfo.taskText}
                     onChange={handleChange}
                     name="taskText"
                   />
@@ -103,7 +110,7 @@ const Task = () => {
                   <input
                     type="datetime-local"
                     className="form-control"
-                    value={taskDate ? taskDate  :taskInfo.dateDoIt}
+                    value={taskInfo.dateDoIt}
                     onChange={handleChange}
                     name="dateDoIt"
                   />

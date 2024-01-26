@@ -13,7 +13,7 @@ const rootReducer = combineReducers({
   getTasks: getTasksReducer,
   logOut:logOutReducer,
   deleteTasks:deleteTaskReducer,
-  getInfo:updateTaskReducer,
+  updateTask:updateTaskReducer,
 });
 
 export default rootReducer;

@@ -196,6 +196,8 @@ export const updateTask = (task) => {
       const response = await axios.put(`http://localhost:3000/tasks/${task.taskId}`, {
         taskText: task.taskText,
         dateDoIt: task.taskDate,
+        dateAdd: task.dateAdd,
+        userId: task.userId,
       });
       const updatedTask = response.data;
       dispatch(updateTaskSuccess(updatedTask));
